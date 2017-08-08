@@ -13,7 +13,6 @@ Features:
 
 Brief:
 ==============
-
 1) 	Upload the application user’s Splunk server (Refer doc: Server_Monitoring_App.docx)
 
 2)	A sample Static dashboard (Server_Interdependency_Sample) is created  which provides a visual representation of how the Tree D3 diagram will look like (Refer doc: Server_Monitoring_App.docx).
@@ -37,3 +36,6 @@ Queries/Feedback:
 2. Poojan Reddy <poojan.reddy@mastek.com>
 3. Prachi Dongre <prachi.dongre@mastek.com>
 
+Web: 
+======
+MASTEK LTD <https://www.mastek.com/>
