@@ -1,6 +1,6 @@
 ﻿Overview: 
 ==========
-“Server Inter-dependency For Splunk” App integrates Nagios with Splunk and uses D3 for visualization of dependency between servers, provides continous server monitoring for better situational awareness of the system, determines capacity of load balancer and displays real-time and point in time status of the system.
+“Server Inter-dependency For Splunk” App integrates Nagios with Splunk and uses D3 for visualization of dependency between servers, provides continuous server monitoring for better situational awareness of the system, determines capacity of load balancer and displays real-time and point in time status of the system.
 
 Features:
 ===========
