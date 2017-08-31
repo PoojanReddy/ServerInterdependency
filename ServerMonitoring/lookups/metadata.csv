@@ -1,0 +1,12 @@
+"HostName","Hoststate","Hostparent","ParentState","Parenttype","Parentcapacity"
+"Appserver1","DOWN","LoadBalancer","UP","LB","LOW"
+"Appserver2","UP","LoadBalancer","UP","LB","FULL"
+"LoadBalancer","UP","CONBOT","UP",,"FULL"
+"CONBOT","UP","CONBOT","UP","","FULL"
+"APP_VM","UP","CONBOT","UP","","FULL"
+"Splunk_Server","UP","APP_VM","UP","","FULL"
+"Monitoring_VM","DOWN","CONBOT","UP","","FULL"
+"Reporting_VM","UNREACHABLE","Monitoring_VM","DOWN","","FULL"
+"OMD_ELK","UP","Monitoring_VM","DOWN","","FULL"
+"DB_VM","UP","Monitoring_VM","DOWN","","FULL"
+

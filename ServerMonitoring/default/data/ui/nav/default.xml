@@ -1,0 +1,15 @@
+<nav>
+  <view name="about" default-'true' />
+  <collection label="Datasets">
+     <view name="datasets" />
+  </collection>
+  <collection label="Reports">
+     <view name="reports" />
+  </collection>  
+  <collection label="Alerts">
+    <view name="alerts" />
+  </collection>
+  <collection label="Dashboard">
+     <view name="dashboards" />
+  </collection>
+</nav>

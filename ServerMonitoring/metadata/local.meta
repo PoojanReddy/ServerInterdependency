@@ -1,0 +1,42 @@
+[app/ui]
+version = 6.6.1
+modtime = 1499254914.457248000
+
+[app/launcher]
+version = 6.6.1
+modtime = 1499254914.458780000
+
+[]
+access = read : [ * ], write : [ admin, power ]
+export = none
+version = 6.6.1
+modtime = 1498658089.915431000
+
+[html/server_monitoring_html]
+access = read : [ * ], write : [ admin, power ]
+export = system
+owner = admin
+version = 6.6.1
+modtime = 1499252789.521498000
+
+[app/package/check_for_updates]
+version = 6.6.1
+modtime = 1499254914.459753000
+
+[html/Server_Interdependency]
+version = 6.6.1
+modtime = 1500389723.895762000
+
+[nav/default]
+version = 6.6.1
+modtime = 1499267852.114584000
+
+[views/about]
+export = none
+owner = nobody
+version = 6.6.1
+modtime = 1499267707.005212000
+
+[html/server_interdependency_static_data]
+version = 6.6.1
+modtime = 1499781492.355740000

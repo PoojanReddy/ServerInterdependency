@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="referrer" content="never" />
+        <meta name="referrer" content="no-referrer" />
+    
+        <script>
+            (function () {
+                window._splunk_metrics_events = [];
+                window._splunk_metrics_events.active = true;
+
+                function onLoadSwa() {
+                    new SWA({"url": "https://e1345286.api.splkmobile.com/1.0/e1345286", "deploymentID": "909886d1-5b69-5544-9df8-a58f2f8121e7", "version": "2", "userID": "e9f1c59363c7f640105b46e79b2c4ff04dba4cc0b1397b243430dea025856fe9", "instanceGUID": "DF1C071E-444E-43CC-BD54-D02D737E52F0"});
+                };
+
+                document.addEventListener("DOMContentLoaded", function(event) {
+                    var s = document.createElement('script');
+                    s.type = 'text/javascript';
+                    s.async = true;
+                    s.src = '/en-US/static/app/splunk_instrumentation/build/pages/swa.js';
+                    s.addEventListener('load', onLoadSwa);
+                    var x = document.getElementsByTagName('script')[0];
+                    x.parentNode.insertBefore(s, x);
+                });
+            }());
+        </script>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Server Interdependency</title>
+    <link rel="shortcut icon" href="/en-US/static/@5E20985C3F192CF73DF099BC0D324065F2734C6B71EC922FE3C5C894C889284C/img/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/build/css/bootstrap-enterprise.css" />
+    <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+	   <style>
+      	.node {
+		cursor: pointer;
+		}
+			#chart {
+			  height: 500px;
+			}
+		.node circle {
+		  fill: green;
+		  stroke: green;
+		  stroke-width: 3px;
+		}
+		
+		.UP {
+			fill: green;
+			stroke: green;
+		}
+		.DOWN {
+			fill: red;
+			stroke: red;
+		}
+		
+		.UNREACHABLE {
+			fill: orange;
+			stroke: orange;
+		}
+
+		.node text {
+		  font: 12px sans-serif;
+		}
+
+		.link {
+		  fill: none;
+		  stroke: #000000;
+		  stroke-width: 2px;
+		}
+		table {
+			display: table;
+			border-collapse: separate;
+			border-spacing: 2px;
+			border: 1px;
+		}
+		caption {
+			text-align:left
+		}
+		
+		#time-range p {
+			font-family:"Arial", sans-serif;
+			font-size:14px;
+			color:#333;
+		}
+		.ui-slider-horizontal {
+			height: 8px;
+			background: #D7D7D7;
+			border: 1px solid #BABABA;
+			box-shadow: 0 1px 0 #FFF, 0 1px 0 #CFCFCF inset;
+			clear: both;
+			margin: 8px 0;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			-ms-border-radius: 6px;
+			-o-border-radius: 6px;
+			border-radius: 6px;
+		}
+		.ui-slider {
+			position: relative;
+			text-align: left;
+		}
+		.ui-slider-horizontal .ui-slider-range {
+			top: -1px;
+			height: 100%;
+		}
+		.ui-slider .ui-slider-range {
+			position: absolute;
+			z-index: 1;
+			height: 8px;
+			font-size: .7em;
+			display: block;
+			border: 1px solid #5BA8E1;
+			box-shadow: 0 1px 0 #AAD6F6 inset;
+			-moz-border-radius: 6px;
+			-webkit-border-radius: 6px;
+			-khtml-border-radius: 6px;
+			border-radius: 6px;
+			background: #81B8F3;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+			background-size: 100%;
+			background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #A0D4F5), color-stop(100%, #81B8F3));
+			background-image: -webkit-linear-gradient(top, #A0D4F5, #81B8F3);
+			background-image: -moz-linear-gradient(top, #A0D4F5, #81B8F3);
+			background-image: -o-linear-gradient(top, #A0D4F5, #81B8F3);
+			background-image: linear-gradient(top, #A0D4F5, #81B8F3);
+		}
+		.ui-slider .ui-slider-handle {
+			border-radius: 50%;
+			background: #F9FBFA;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+			background-size: 100%;
+			background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #C7CED6), color-stop(100%, #F9FBFA));
+			background-image: -webkit-linear-gradient(top, #C7CED6, #F9FBFA);
+			background-image: -moz-linear-gradient(top, #C7CED6, #F9FBFA);
+			background-image: -o-linear-gradient(top, #C7CED6, #F9FBFA);
+			background-image: linear-gradient(top, #C7CED6, #F9FBFA);
+			width: 22px;
+			height: 22px;
+			-webkit-box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+			-moz-box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+			box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+			-webkit-transition: box-shadow .3s;
+			-moz-transition: box-shadow .3s;
+			-o-transition: box-shadow .3s;
+			transition: box-shadow .3s;
+		}
+		.ui-slider .ui-slider-handle {
+			position: absolute;
+			z-index: 2;
+			width: 22px;
+			height: 22px;
+			cursor: default;
+			border: none;
+			cursor: pointer;
+		}
+		.ui-slider .ui-slider-handle:after {
+			content:"";
+			position: absolute;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			top: 50%;
+			margin-top: -4px;
+			left: 50%;
+			margin-left: -4px;
+			background: #30A2D2;
+			-webkit-box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 #FFF;
+			-moz-box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 white;
+			box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 #FFF;
+		}
+		.ui-slider-horizontal .ui-slider-handle {
+			top: -.5em;
+			margin-left: -.6em;
+		}
+		.ui-slider a:focus {
+			outline:none;
+		}
+	
+	
+    </style>  
+</head>
+<body class="simplexml preload locale-en" data-splunk-version="6.6.1" data-splunk-product="enterprise">
+<!-- 
+BEGIN LAYOUT
+This section contains the layout for the dashboard. Splunk uses proprietary
+styles in <div> tags, similar to Bootstrap's grid system. 
+-->
+<header>
+    <a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
+    <div class="header splunk-header">
+            <div id="placeholder-splunk-bar">
+                <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
+            </div>
+                <div id="placeholder-app-bar"></div>
+    </div>
+    <a id="navSkip"></a>
+</header>
+<div class="dashboard-body container-fluid main-section-body" data-role="main">
+
+	
+	<div class="dashboard-header clearfix">
+        <h2>Server Inter-dependency Visualization</h2>
+    </div>
+	
+	<!-- time slider -->
+	<div id="time-range">
+    <p>Time Range: <span class="slider-time"></span> - <span class="slider-time2"></span>
+    </p>
+    
+    <div class="sliders_step1">
+        <div id="slider-range"></div>
+    </div>
+	<!-- submit button -->	
+	 <div class="form-submit" id="search_btn">
+            <button class="btn btn-primary submit">Submit</button>
+     </div>
+	</div>
+	
+
+	<!-- First row -->
+    <div class="dashboard-row">
+        <div class="dashboard-cell" style="width: 100%;">
+           <div class="dashboard-panel">
+                <div class="panel-element-row">
+                    <div class="dashboard-element">
+                        <div class="panel-head"> 
+                            <!-- <h3>Server Dependency Chart</h3>  -->
+                        </div>
+                        <div class="panel-body">
+							<p id="chart"></p>   <!-- D3 visualization  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!-- End First row -->
+	
+	<!-- Start of Second row -->
+    <div id="row1" class="dashboard-row dashboard-row1">
+        <div id="panel1" class="dashboard-cell" style="width: 100%;">
+            <div class="dashboard-panel clearfix">
+ 				  <!-- tree Chart  -->
+							<table> 
+							<tr>
+
+							<td>
+							<div style='float: left;'>
+								<table >
+								<caption><b>Node Legends</b></caption>
+								  <tr>
+									<th width: 10px; height: 50px;>Node Color</th>
+									<th>Node Status</th>
+								  </tr>
+								  <tr>
+									<td bgcolor="green"></td>
+									<td>Host status UP</td>
+								  </tr>
+								  <tr>
+									<td bgcolor="red"></td>
+									<td>Host status Down</td>
+								  </tr>
+								   <tr>
+									<td bgcolor="orange"></td>
+									<td>Host status Unreachable</td>
+								  </tr>
+								  <tr>
+									<td bgcolor="#0080ff"></td>
+									<td>Others</td>
+								  </tr>
+								</table>
+								<br><br>
+								<table >
+								<caption><b>Link Legends</b></caption>
+								  <tr>
+									<th width: 10px; height: 50px;>Parent Node</th>
+									<th width: 10px; height: 50px;>Child Node</th>
+									<th width: 10px; height: 50px;>Link Color</th>
+									<th>Remarks</th>
+								  </tr>
+								  <tr>
+									<td bgcolor="green"></td>
+									<td bgcolor="green"></td>
+									<td bgcolor="green"></td>
+									<td>Link Available</td>
+								  </tr>
+								   <tr>
+									<td bgcolor="green"></td>
+									<td bgcolor="red"></td>
+									<td bgcolor="red"></td>
+									<td>Link Unavailable</td>
+								  </tr>
+								  <tr>
+									<td bgcolor="red"></td>
+									<td bgcolor="green"></td>
+									<td bgcolor="orange"></td>
+									<td>Link Unreachable</td>
+								  </tr>
+									<tr>
+									<td bgcolor="red"></td>
+									<td bgcolor="red"></td>
+									<td bgcolor="orange"></td>
+									<td>Link Unreachable</td>
+								  </tr>
+								</table>
+								<br><br>
+								<table >
+								<caption><b>Load Balancer(LB) Legends</b></caption>
+								  <tr>
+									<th width: 10px; height: 50px;>Capacity</th>
+									<th>Remarks</th>
+								  </tr>
+								  <tr>
+									<td bgcolor="green"></td>
+									<td>LB on FULL capacity</td>
+								  </tr>
+								   <tr>
+									<td style= " background-image:url({{SPLUNKWEB_URL_PREFIX}}/static/app/ServerMonitoring/lowcapacity.jpg);background-repeat:no-repeat;" ></td>
+									<td>LB on LOW capacity</td>
+								  </tr>
+								  <tr>
+									<td style= " background-image:url({{SPLUNKWEB_URL_PREFIX}}/static/app/ServerMonitoring/nilcapacity.jpg);background-repeat:no-repeat;" ></td>
+									<td>LB on ZERO capacity</td>
+								  </tr>
+								</table>
+							</div>
+						</td>
+						<td></td><td></td><td colspan=150>
+							<div class="panel-element-row" >
+							    <h3 align="left"><b> Details  <b></h3>
+								<div id="element1" class="dashboard-element table" style="width: 50%" >
+									<div class="panel-body" style='float: right:150;'></div>
+								</div>
+								
+							</div>
+						</td>
+					</tr>
+				</table>								
+            </div>
+        </div>
+    </div>
+	<!-- End of Second row -->
+	
+</div>
+
+<!-- 
+END LAYOUT
+-->
+
+<script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1" crossorigin="use-credentials"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+<script src="http://d3js.org/d3.v2.min.js"></script>
+<script src="http://d3js.org/d3.v2.min.js"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/ServerMonitoring/d3_visualization.js"></script>
+
+
+<script type="text/javascript">
+// <![CDATA[
+// <![CDATA[
+//
+// LIBRARY REQUIREMENTS
+//
+// In the require function, we include the necessary libraries and modules for
+// the HTML dashboard. Then, we pass variable names for these libraries and
+// modules as function parameters, in order.
+// 
+// When you add libraries or modules, remember to retain this mapping order
+// between the library or module and its function parameter. You can do this by
+// adding to the end of these lists, as shown in the commented examples below.
+
+
+require.config({
+      baseUrl: "{{SPLUNKWEB_URL_PREFIX}}/static/js",
+      waitSeconds: 0, // Disable require.js load timeout
+    // For this tutorial, download third-party libraries over the internet.
+    // In practice, it is recommended that you bundle dependencies with your app.
+   paths: {
+        'jquery-ui': 'http://code.jquery.com/ui/1.10.0/jquery-ui',
+        'd3': 'http://d3js.org/d3.v2.min',
+		'd3_visualization': '{{SPLUNKWEB_URL_PREFIX}}/static/app/ServerMonitoring/d3_visualization'
+    },
+    shim: {
+        'jquery-ui': {
+            deps: ['jquery']
+        },		
+		'd3_visualization': {
+            deps: ['d3']
+        }
+    }
+ });
+ 
+ require(['jquery-ui', 'splunkjs/mvc/simplexml/ready!'], function() {
+    $('#accordion .panel-title').remove();
+    $('#accordion .fieldset').remove();
+    $('#accordion').accordion({
+        heightStyle: "content"
+    });
+});
+
+require([
+    "splunkjs/mvc",
+    "splunkjs/mvc/utils",
+    "splunkjs/mvc/tokenutils",
+    "underscore",
+    "jquery",
+    "splunkjs/mvc/simplexml",
+    "splunkjs/mvc/layoutview",
+    "splunkjs/mvc/simplexml/dashboardview",
+    "splunkjs/mvc/simplexml/dashboard/panelref",
+    "splunkjs/mvc/simplexml/element/chart",
+    "splunkjs/mvc/simplexml/element/event",
+    "splunkjs/mvc/simplexml/element/html",
+    "splunkjs/mvc/simplexml/element/list",
+    "splunkjs/mvc/simplexml/element/map",
+    "splunkjs/mvc/simplexml/element/single",
+    "splunkjs/mvc/simplexml/element/table",
+    "splunkjs/mvc/simplexml/element/visualization",
+    "splunkjs/mvc/simpleform/formutils",
+    "splunkjs/mvc/simplexml/eventhandler",
+    "splunkjs/mvc/simplexml/searcheventhandler",
+    "splunkjs/mvc/simpleform/input/dropdown",
+    "splunkjs/mvc/simpleform/input/radiogroup",
+    "splunkjs/mvc/simpleform/input/linklist",
+    "splunkjs/mvc/simpleform/input/multiselect",
+    "splunkjs/mvc/simpleform/input/checkboxgroup",
+    "splunkjs/mvc/simpleform/input/text",
+    "splunkjs/mvc/simpleform/input/timerange",
+    "splunkjs/mvc/simpleform/input/submit",
+    "splunkjs/mvc/searchmanager",
+    "splunkjs/mvc/savedsearchmanager",
+    "splunkjs/mvc/postprocessmanager",
+    "splunkjs/mvc/simplexml/urltokenmodel",
+	"jquery-ui",
+	"d3_visualization"
+	    // Add comma-separated libraries and modules manually here, for example:
+    // ..."splunkjs/mvc/simplexml/urltokenmodel",
+    // "splunkjs/mvc/tokenforwarder"
+    ],
+    function(
+        mvc,
+        utils,
+        TokenUtils,
+        _,
+        $,
+        DashboardController,
+        LayoutView,
+        Dashboard,
+        PanelRef,
+        ChartElement,
+        EventElement,
+        HtmlElement,
+        ListElement,
+        MapElement,
+        SingleElement,
+        TableElement,
+        VisualizationElement,
+        FormUtils,
+        EventHandler,
+        SearchEventHandler,
+        DropdownInput,
+        RadioGroupInput,
+        LinkListInput,
+        MultiSelectInput,
+        CheckboxGroupInput,
+        TextInput,
+        TimeRangeInput,
+        SubmitButton,
+        SearchManager,
+        SavedSearchManager,
+        PostProcessManager,
+        UrlTokenModel
+
+        // Add comma-separated parameter names here, for example: 
+        // ...UrlTokenModel, 
+        // TokenForwarder
+        ) {
+
+        var pageLoading = true;
+
+        // 
+        // TOKENS
+        //
+        
+        // Create token namespaces
+        var urlTokenModel = new UrlTokenModel();
+        mvc.Components.registerInstance('url', urlTokenModel);
+        var defaultTokenModel = mvc.Components.getInstance('default', {create: true});
+        var submittedTokenModel = mvc.Components.getInstance('submitted', {create: true});
+
+        urlTokenModel.on('url:navigate', function() {
+            defaultTokenModel.set(urlTokenModel.toJSON());
+            if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+                submitTokens();
+            } else {
+                submittedTokenModel.clear();
+            }
+        });
+
+        // Initialize tokens
+        defaultTokenModel.set(urlTokenModel.toJSON());
+
+        function submitTokens() {
+            // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+            FormUtils.submitForm({ replaceState: pageLoading });
+        }
+
+        function setToken(name, value) {
+            defaultTokenModel.set(name, value);
+            submittedTokenModel.set(name, value);
+        }
+
+        function unsetToken(name) {
+            defaultTokenModel.unset(name);
+            submittedTokenModel.unset(name);
+        }
+
+		 
+         // VIEWS: FORM INPUTS for time slider
+		function zeroPad(num, places) {
+		  var zero = places - num.toString().length + 1;
+		  return Array(+(zero > 0 && zero)).join("0") + num;
+		}
+		function formatDT(__dt) {
+			var year = __dt.getFullYear();
+			var month = zeroPad(__dt.getMonth()+1, 2);
+			var date = zeroPad(__dt.getDate(), 2);
+			var hours = zeroPad(__dt.getHours(), 2);
+			var minutes = zeroPad(__dt.getMinutes(), 2);
+			var seconds = zeroPad(__dt.getSeconds(), 2);
+			return year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
+		};
+
+		var today = new Date();
+		var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+		var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+		var dt_to_temp = date+' '+time;
+		
+	    var dt_to = dt_to_temp.toString();
+		// var dt_to = "2017/07/01 16:37:43"; sample date
+
+		$('.slider-time2').html(dt_to);
+		var max_val = Date.parse(dt_to)/1000;
+
+		$("#slider-range").slider({
+				range: true,
+				min: max_val-(86400*3), // 72 hours window (can be modified as per requirement)
+				max: max_val,
+				step: 10,
+				values: [max_val-(86400*3), max_val], // 72 hours window (can be modified as per requirement) 
+				slide: function (e, ui) {
+					dt_cur_from = new Date(ui.values[0]*1000); //.format("yyyy-mm-dd hh:ii:ss");
+					$('.slider-time').html(formatDT(dt_cur_from));
+
+					dt_cur_to = new Date(ui.values[1]*1000); //.format("yyyy-mm-dd hh:ii:ss");  		
+					$('.slider-time2').html(formatDT(dt_cur_to));
+					
+					var Max_minutes = max_val/60;
+					var current_minutes = dt_cur_to/(1000*60);
+					
+					//console.log("Max_minutes"+Max_minutes);
+					//console.log("current_minutes"+current_minutes);
+					
+					var latest_diff= Math.round(Max_minutes - current_minutes);
+					var earliest_diff= Math.round(Max_minutes - current_minutes +15); // to provide 15 minute window to fetch the logs
+					
+					var latest_value = "-"+latest_diff+"m";
+					 
+					var earliest_value = "-"+earliest_diff+"m";
+					 
+					//console.log("latest value: "+ latest_value);
+					//console.log("earliest value: "+ earliest_value);
+					defaultTokenModel.set("time_range.latest", latest_value);
+					defaultTokenModel.set("time_range.earliest", earliest_value);
+				} 
+				
+		});
+		
+
+        //
+        // SPLUNK LAYOUT
+        //
+
+        $('header').remove();
+        new LayoutView({"hideChrome": false, "hideSplunkBar": false, "hideFooter": false, "hideAppBar": false})
+            .render()
+            .getContainerElement()
+            .appendChild($('.dashboard-body')[0]);
+
+        //
+        // DASHBOARD EDITOR
+        //
+
+        new Dashboard({
+            id: 'dashboard',
+            el: $('.dashboard-body'),
+            showTitle: true,
+            editable: true
+        }, {tokens: true}).render();
+
+        //
+        // SEARCH MANAGER
+        //
+		
+		var newQuery = "index=nagios sourcetype=\"nagioshostperf\" | table HostName, Hostparent , Hoststate, Timet,Parenttype  | join Hostparent [search index=nagios sourcetype=\"nagioshostperf\" | table HostName, Hoststate, Timet,Parenttype   | rename HostName as Hostparent, Hoststate as Parentstate, Timet as Parenttime] |eval Parentcapacity = if((Hoststate == \"DOWN\" AND  Parenttype == \"LB\"), \"LOW\", \"FULL\")  | table HostName, Hoststate , Hostparent, Parentstate ,Parenttype ,Parentcapacity  | dedup HostName sortby Hosttime desc , Parenttime desc";
+		
+		//
+		 // Update the $searchQuery$ token value
+         defaultTokenModel.set("searchQuery", newQuery);
+		 
+         
+		var search1 = new SearchManager({
+            "id": "search1",
+            "latest_time": mvc.tokenSafe("$time_range.latest$"),  //latest_val(), // "-60m", //now
+            "earliest_time": mvc.tokenSafe("$time_range.earliest$"),   //earliest_val(), // "-75m",  //-24h@h
+            "cancelOnUnload": true,
+            "sample_ratio": null,
+            "search": mvc.tokenSafe("$searchQuery$") ,
+            "status_buckets": 0,
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "preview": true,
+			"tokenDependencies": {
+            },
+            "runWhenTimeIsUndefined": false
+        }, {tokens: true, tokenNamespace: "submitted"});
+
+
+        // VIEWS: VISUALIZATION ELEMENTS
+        //
+
+        var element1 = new TableElement({
+            "id": "element1",
+            "count": 20,
+            "dataOverlayMode": "none",
+            "drilldown": "none",
+            "percentagesRow": "false",
+            "rowNumbers": "false",
+            "totalsRow": "false",
+            "wrap": "true",
+            "managerid": "search1",
+            "el": $('#element1')
+        }, {tokens: true, tokenNamespace: "submitted"}).render();
+
+		
+		var myResults = search1.data("results", {
+            output_mode: "json_rows",
+            count: 0 // get all results
+        });
+		
+
+        // SUBMIT FORM DATA
+
+        var submit = new SubmitButton({
+            id: 'submit',
+            el: $('#search_btn')
+        }, {tokens: true}).render();
+
+        submit.on("submit", function() {
+            submitTokens();	
+			//visualization(myResults,"#chart");			
+        });
+		
+
+        // Initialize Dashboard with default values
+        if (!defaultTokenModel.has('earliest_time') && !defaultTokenModel.has('latest_time')) {
+            //defaultTokenModel.set({ earliest_time: '0', latest_time: '' });
+			defaultTokenModel.set("time_range.latest", "-0m");
+		    defaultTokenModel.set("time_range.earliest", "-15m"); // to provide 15 minute window to fetch the logs; "-24h@h" for 1 day window
+			submitTokens();
+			//call d3_visualization.js
+			visualization(myResults,"#chart");
+        }
+
+		if (!_.isEmpty(urlTokenModel.toJSON())){
+            submitTokens();
+			
+		}
+
+        //
+        // DASHBOARD READY
+        //
+
+        DashboardController.ready();
+        pageLoading = true;  //default false
+
+    }
+);
+// ]]>
+</script>
+</body>
+</html>

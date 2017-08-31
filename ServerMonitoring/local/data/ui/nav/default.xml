@@ -1,0 +1,8 @@
+<nav>
+  <view name="about" default='true' />
+  <view name="flashtimeline" />
+  <view name="datasets" />
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+</nav>
